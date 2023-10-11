@@ -30,7 +30,7 @@ def add(x: float, y: float) -> float:
 def neg(x: float) -> float:
     "$f(x) = -x$"
     # TODO: Implement for Task 0.1.
-    return -x
+    return -1.0*x
 
 
 def lt(x: float, y: float) -> float:
@@ -80,7 +80,7 @@ def relu(x: float) -> float:
     (See https://en.wikipedia.org/wiki/Rectifier_(neural_networks) .)
     """
     # TODO: Implement for Task 0.1.
-    return x if x > 0 else 0
+    return float(x) if x > 0 else 0.0
 
 
 EPS = 1e-6
