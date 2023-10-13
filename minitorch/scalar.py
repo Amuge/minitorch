@@ -167,14 +167,14 @@ class Scalar:
         assert self.history is not None
         return self.history.inputs
 
-    def chain_rule(self, d_output: Any) -> Iterable[Tuple[Variable, Any]]:
+    def chain_rule(self, d_output: Any) -> Iterable[Tuple[Variable, Any]]:#Scalar就是协议类Variable的具体实现
         h = self.history
         assert h is not None
         assert h.last_fn is not None
         assert h.ctx is not None
 
         # TODO: Implement for Task 1.3.
-        grads = h.last_fn._backward(h.ctx,d_output)
+        grads = h.last_fn._backward(h.ctx,d_output)#函数的返回是得到当前Scalar值的函数反向传播时每个输入变量对应的梯度
         return zip(h.inputs,grads)#zip函数的返回是迭代器，可用typing里的Iterable[Tuple[type1,type2]]表示
 
     def backward(self, d_output: Optional[float] = None) -> None:

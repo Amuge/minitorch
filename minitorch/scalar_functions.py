@@ -148,7 +148,7 @@ class Sigmoid(ScalarFunction):
     @staticmethod
     def forward(ctx: Context, a: float) -> float:
         # TODO: Implement for Task 1.2.
-        ctx.save_for_backward(a)
+        ctx.save_for_backward(operators.sigmoid(a))
         return operators.sigmoid(a)
 
     @staticmethod
@@ -178,8 +178,9 @@ class Exp(ScalarFunction):
     @staticmethod
     def forward(ctx: Context, a: float) -> float:
         # TODO: Implement for Task 1.2.
-        ctx.save_for_backward(a)
-        return operators.exp(a)
+        exp_a = operators.exp(a)
+        ctx.save_for_backward(exp_a)
+        return exp_a
 
     @staticmethod
     def backward(ctx: Context, d_output: float) -> float:
