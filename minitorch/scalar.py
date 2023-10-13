@@ -174,7 +174,7 @@ class Scalar:
         assert h.ctx is not None
 
         # TODO: Implement for Task 1.3.
-        grads = h.last_fn._backward(h.ctx,d_output)#函数的返回是得到当前Scalar值的函数反向传播时每个输入变量对应的梯度
+        grads = h.last_fn._backward(h.ctx,d_output)#chain_rule函数是得到当前Scalar值的函数反向传播时每个输入变量对应的梯度
         return zip(h.inputs,grads)#zip函数的返回是迭代器，可用typing里的Iterable[Tuple[type1,type2]]表示
 
     def backward(self, d_output: Optional[float] = None) -> None:
