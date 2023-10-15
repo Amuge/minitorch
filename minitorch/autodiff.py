@@ -91,9 +91,16 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
                 if not i.is_constant():
                     visit(i)
         visited.add(v.unique_id)
-        res.insert(0,v)
+        res.insert(0,v) 
 
-    visit(variable)
+    def visit_2(v:Variable) -> None:
+        visited.add(v.unique_id)
+        for i in v.parents:
+            if not i.is_constant() and i.unique_id not in visited:
+                visit(i)
+        res.insert(0,v) 
+
+    visit_2(variable)
     return res
 
 
