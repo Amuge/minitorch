@@ -101,7 +101,9 @@ def broadcast_index(
         None
     """
     # TODO: Implement for Task 2.2.
-    raise NotImplementedError('Need to implement for Task 2.2')
+    for i in range(len(shape)):
+        offset = len(big_shape) - len(shape) + i
+        out_index[i] = big_index[offset] if shape[i] != 1 else 0
 
 
 def shape_broadcast(shape1: UserShape, shape2: UserShape) -> UserShape:
@@ -119,7 +121,41 @@ def shape_broadcast(shape1: UserShape, shape2: UserShape) -> UserShape:
         IndexingError : if cannot broadcast
     """
     # TODO: Implement for Task 2.2.
-    raise NotImplementedError('Need to implement for Task 2.2')
+    x = shape1
+    y = shape2
+
+    new_x_shape = list(x)
+    new_y_shape = list(y)
+    len_diff = abs(len(x) - len(y))
+    if len_diff > 0:
+        if(len(x) < len(y)):
+            for i in range(len_diff):
+                new_x_shape.insert(0,1)
+        else:
+            for i in range(len_diff):
+                new_y_shape.insert(0,1)
+ 
+    length = max(len(x),len(y))
+    new_shape = [0] * length
+
+    for i in range(length):
+        if new_x_shape[i] == 1 or new_y_shape[i] == 1 or new_x_shape[i] == new_y_shape[i]:
+            new_shape[i] = max(new_x_shape[i],new_y_shape[i])
+        else:
+            raise IndexingError("Broadcast failure")
+    return tuple(new_shape)
+
+    # l = max(len(shape1), len(shape2))
+    # if len(shape1) > len(shape2):
+    #     shape2 = [1 for i in range(l - len(shape2))] + list(shape2)
+    # else:
+    #     shape1 = [1 for i in range(l - len(shape1))] + list(shape1)
+    # ans = []
+    # for i in range(l):
+    #     if shape1[i] != shape2[i] and shape1[i] != 1 and shape2[i] != 1:
+    #         raise IndexingError("it cannot broadcast")
+    #     ans.append(max(shape1[i], shape2[i]))
+    # return tuple(ans)
 
 
 def strides_from_shape(shape: UserShape) -> UserStrides:
@@ -255,6 +291,12 @@ class TensorData:
                 
         new_shape,new_strides = chage_dim(order,self.shape,self.strides)
         return TensorData(self._storage,new_shape,new_strides)
+
+        # return TensorData(
+        #     self._storage,
+        #     tuple([self.shape[i] for i in order]),
+        #     tuple([self.strides[i] for i in order]),
+        # )
 
     def to_string(self) -> str:
         s = ""
