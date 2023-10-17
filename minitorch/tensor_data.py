@@ -64,7 +64,21 @@ def to_index(ordinal: int, shape: Shape, out_index: OutIndex) -> None:
 
     """
     # TODO: Implement for Task 2.1.
-    raise NotImplementedError('Need to implement for Task 2.1')
+    #get the 'strides'
+    len_shape = len(shape)
+    strides = strides_from_shape(shape)
+    #calculate the index of each dim
+    cur_ord = ordinal
+    for i in range(len_shape):
+        out_index[i] = cur_ord // strides[i]
+        cur_ord -= strides[i] * out_index[i]
+
+    # current_ordinal = ordinal
+
+    # for i in range(len(shape) - 1, -1, -1):
+    #     #store back to out_index_list
+    #     out_index[i] = int(current_ordinal % shape[i])#remainder
+    #     current_ordinal = current_ordinal // shape[i]#divided answer
 
 
 def broadcast_index(
@@ -194,7 +208,8 @@ class TensorData:
                 raise IndexingError(f"Negative indexing for {aindex} not supported.")
 
         # Call fast indexing.
-        return index_to_position(array(index), self._strides)
+        # return index_to_position(array(index), self._strides)
+        return index_to_position(aindex, self._strides)
 
     def indices(self) -> Iterable[UserIndex]:
         lshape: Shape = array(self.shape)
@@ -229,9 +244,17 @@ class TensorData:
         assert list(sorted(order)) == list(
             range(len(self.shape))
         ), f"Must give a position to each dimension. Shape: {self.shape} Order: {order}"
-
         # TODO: Implement for Task 2.1.
-        raise NotImplementedError('Need to implement for Task 2.1')
+        def chage_dim(order:UserIndex,old_shape:UserShape,old_stride:UserStrides):
+            new_shape = [0] * len(order)
+            new_strides = [0] * len(order)
+            for i in range(len(order)):
+                new_shape[i] = old_shape[order[i]]
+                new_strides[i] = old_stride[order[i]]
+            return tuple(new_shape),tuple(new_strides)
+                
+        new_shape,new_strides = chage_dim(order,self.shape,self.strides)
+        return TensorData(self._storage,new_shape,new_strides)
 
     def to_string(self) -> str:
         s = ""
