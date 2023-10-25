@@ -265,7 +265,21 @@ def tensor_map(
         in_strides: Strides,
     ) -> None:
         # TODO: Implement for Task 2.3.
-        raise NotImplementedError('Need to implement for Task 2.3')
+        #find index of in and out shape
+        out_index = np.array(out_shape)
+        in_index = np.array(in_shape)
+        #loop over the storage for out tensor
+        for i in range(len(out)):
+            #convert an 'ordinal' to an 'index' in the shape
+            to_index(i,out_shape,out_index)
+
+            broadcast_index(out_index,out_shape,in_shape,in_index)
+            #get data from the storage
+            data = in_storage[index_to_position(in_index,in_strides)]
+            result = fn(data)
+            
+            #store 'result' back to the out storage for out tensor
+            out[index_to_position(out_index,out_strides)] = result
 
     return _map
 
@@ -310,7 +324,21 @@ def tensor_zip(
         b_strides: Strides,
     ) -> None:
         # TODO: Implement for Task 2.3.
-        raise NotImplementedError('Need to implement for Task 2.3')
+        a_index = np.array(a_shape)
+        b_index = np.array(b_shape)
+        out_index = np.array(out_shape)
+        #loop over out
+        for i in range(len(out)):
+            to_index(i,out_shape,out_index)
+
+            broadcast_index(out_index,out_shape,a_shape,a_index)
+            broadcast_index(out_index,out_shape,b_shape,b_index)
+
+            val_a = a_storage[index_to_position(a_index,a_strides)]
+            val_b = b_storage[index_to_position(b_index,b_strides)]
+            result = fn(val_a,val_b)
+
+            out[index_to_position(out_index,out_strides)] = result
 
     return _zip
 
@@ -341,7 +369,18 @@ def tensor_reduce(
         reduce_dim: int,
     ) -> None:
         # TODO: Implement for Task 2.3.
-        raise NotImplementedError('Need to implement for Task 2.3')
+        out_index = np.array(out_shape)
+
+        for i in range(len(out)):
+            to_index(i,out_shape,out_index)
+
+            pos_o = index_to_position(out_index,out_strides)
+
+            for j in range(a_shape[reduce_dim]):
+                a_index = out_index.copy()
+                a_index[reduce_dim] = j
+                pos_a = index_to_position(a_index,a_strides)
+                out[pos_o] = fn(a_storage[pos_a],out[pos_o])
 
     return _reduce
 
