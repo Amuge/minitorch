@@ -106,7 +106,8 @@ class Mul(Function):
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tuple[Tensor, Tensor]:
         # TODO: Implement for Task 2.4.
-        raise NotImplementedError('Need to implement for Task 2.4')
+        a,b = ctx.saved_values
+        return b*grad_output,a*grad_output 
 
 
 class Sigmoid(Function):
@@ -119,8 +120,10 @@ class Sigmoid(Function):
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tensor:
         # TODO: Implement for Task 2.4.
-        raise NotImplementedError('Need to implement for Task 2.4')
-
+        (a,) = ctx.saved_values
+        m = a.f.sigmoid_map(a)
+        return -m * (m - 1)#直接用符号计算会去调用Tensor的魔法函数如'__mul__'
+                           #而该魔法函数会调用tensor_functions.py下MUL类的forward()函数
 
 class ReLU(Function):
     @staticmethod
@@ -132,7 +135,8 @@ class ReLU(Function):
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tensor:
         # TODO: Implement for Task 2.4.
-        raise NotImplementedError('Need to implement for Task 2.4')
+        (a,) = ctx.saved_values
+        return a.f.relu_back_zip(a,grad_output)
 
 
 class Log(Function):
@@ -145,7 +149,8 @@ class Log(Function):
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tensor:
         # TODO: Implement for Task 2.4.
-        raise NotImplementedError('Need to implement for Task 2.4')
+        (a,) = ctx.saved_values
+        return a.f.log_back_zip(a,grad_output)
 
 
 class Exp(Function):
@@ -158,7 +163,9 @@ class Exp(Function):
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tensor:
         # TODO: Implement for Task 2.4.
-        raise NotImplementedError('Need to implement for Task 2.4')
+        (a,) = ctx.saved_values
+        exp_a = a.f.exp_map(a)
+        return exp_a * grad_output
 
 
 class Sum(Function):
@@ -191,7 +198,9 @@ class LT(Function):
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tuple[Tensor, Tensor]:
         # TODO: Implement for Task 2.4.
-        raise NotImplementedError('Need to implement for Task 2.4')
+        a1 = grad_output.zeros()
+        a2 = grad_output.zeros()
+        return a1,a2
 
 
 class EQ(Function):
@@ -203,7 +212,9 @@ class EQ(Function):
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tuple[Tensor, Tensor]:
         # TODO: Implement for Task 2.4.
-        raise NotImplementedError('Need to implement for Task 2.4')
+        a1 = grad_output.zeros()
+        a2 = grad_output.zeros()
+        return a1,a2
 
 
 class IsClose(Function):
@@ -218,15 +229,22 @@ class Permute(Function):
     def forward(ctx: Context, a: Tensor, order: Tensor) -> Tensor:
         # TODO: Implement for Task 2.3.
         ls = []
-        for i in a._tensor._storage:
-            ls.append(i)
+        for i in order._tensor._storage:
+            ls.append(int(i))
         ctx.save_for_backward(a,ls)
-        return Tensor(a._tensor.permute(*ls),backend=a.backend)
+        return minitorch.Tensor(a._tensor.permute(*ls),backend=a.backend)
 
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tuple[Tensor, float]:
         # TODO: Implement for Task 2.4.
-        raise NotImplementedError('Need to implement for Task 2.4')
+        a, ls = ctx.saved_tensors
+        ls1 = []
+        for i in range(len(ls)):
+            ls1.append(ls.index(i))#ls.index(i)->返回i值的索引
+        grad_output = minitorch.Tensor(
+            grad_output._tensor.permute(*ls1), backend=a.backend
+        )
+        return grad_output, 0.0
 
 
 class View(Function):

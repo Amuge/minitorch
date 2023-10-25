@@ -176,11 +176,7 @@ class ReLU(ScalarFunction):
     def backward(ctx: Context, d_output: float) -> float:
         # TODO: Implement for Task 1.4.
         (f_prime,) = ctx.saved_values
-        if f_prime <= 0:
-            return 0
-        else:
-            return d_output
-
+        return operators.relu_back(f_prime,d_output)
 
 class Exp(ScalarFunction):
     "Exp function"
