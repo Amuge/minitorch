@@ -64,21 +64,27 @@ def to_index(ordinal: int, shape: Shape, out_index: OutIndex) -> None:
 
     """
     # TODO: Implement for Task 2.1.
-    #get the 'strides'
-    len_shape = len(shape)
-    strides = strides_from_shape(shape)
-    #calculate the index of each dim
-    cur_ord = ordinal
-    for i in range(len_shape):
-        out_index[i] = cur_ord // strides[i]
-        cur_ord -= strides[i] * out_index[i]
+    # #get the 'strides'
+    # len_shape = len(shape)
+    # strides = strides_from_shape(shape)
+    # #calculate the index of each dim
+    # cur_ord = ordinal
+    # for i in range(len_shape):
+    #     out_index[i] = cur_ord // strides[i]
+    #     cur_ord -= strides[i] * out_index[i]
 
-    # current_ordinal = ordinal
+    current_ordinal = ordinal + 0 # ??????
 
+    for i in range(len(shape) - 1, -1, -1):
+        #store back to out_index_list
+        out_index[i] = int(current_ordinal % shape[i])#remainder
+        current_ordinal = current_ordinal // shape[i]#divided answer
+     
+    # cur_ord = ordinal + 0 # why plus 0? why without it would cause the numba.core.errors? 
     # for i in range(len(shape) - 1, -1, -1):
-    #     #store back to out_index_list
-    #     out_index[i] = int(current_ordinal % shape[i])#remainder
-    #     current_ordinal = current_ordinal // shape[i]#divided answer
+    #     sh = shape[i]
+    #     out_index[i] = int(cur_ord % sh)
+    #     cur_ord = cur_ord // sh
 
 
 def broadcast_index(
