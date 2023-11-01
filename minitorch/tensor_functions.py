@@ -106,7 +106,7 @@ class Mul(Function):
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tuple[Tensor, Tensor]:
         # TODO: Implement for Task 2.4.
-        a,b = ctx.saved_values
+        (a,b) = ctx.saved_values
         return b*grad_output,a*grad_output 
 
 
