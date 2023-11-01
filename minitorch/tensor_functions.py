@@ -150,7 +150,7 @@ class Log(Function):
     def backward(ctx: Context, grad_output: Tensor) -> Tensor:
         # TODO: Implement for Task 2.4.
         (a,) = ctx.saved_values
-        return a.f.log_back_zip(a,grad_output)
+        return grad_output / a
 
 
 class Exp(Function):
